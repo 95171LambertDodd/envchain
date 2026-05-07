@@ -76,3 +76,17 @@ func (f *Flattener) Flatten(sources []Source) (map[string]string, error) {
 	}
 	return out, nil
 }
+
+// Keys returns the sorted list of keys present in the flattened result.
+// This is a convenience wrapper that runs Flatten and extracts the key set.
+func (f *Flattener) Keys(sources []Source) ([]string, error) {
+	result, err := f.Flatten(sources)
+	if err != nil {
+		return nil, err
+	}
+	keys := make([]string, 0, len(result))
+	for k := range result {
+		keys = append(keys, k)
+	}
+	return keys, nil
+}
