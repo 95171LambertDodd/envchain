@@ -61,6 +61,21 @@ func (v *Validator) Validate(env map[string]string) []error {
 	return errs
 }
 
+// ValidateAndSummarize runs Validate and returns a single combined error
+// if any validation failures occurred, or nil if all rules pass.
+// Useful when callers want a single error rather than a slice.
+func (v *Validator) ValidateAndSummarize(env map[string]string) error {
+	errs := v.Validate(env)
+	if len(errs) == 0 {
+		return nil
+	}
+	messages := make([]string, len(errs))
+	for i, err := range errs {
+		messages[i] = err.Error()
+	}
+	return fmt.Errorf("validation failed with %d error(s): %s", len(errs), strings.Join(messages, "; "))
+}
+
 func contains(slice []string, item string) bool {
 	for _, s := range slice {
 		if s == item {
